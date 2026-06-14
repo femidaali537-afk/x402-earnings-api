@@ -1,7 +1,7 @@
 {
-  "name": "x402-earnings-api",
-  "version": "1.0.0",
-  "description": "Real-World AI Civilization Engine",
+  "name": "x402-omega-supreme",
+  "version": "4.0.0",
+  "description": "Permanent AI Empire with Cloud Memory",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -9,8 +9,9 @@
   "dependencies": {
     "express": "^4.18.2",
     "cors": "^2.8.5",
+    "ethers": "^6.7.0",
     "dotenv": "^16.3.1",
-    "ethers": "^6.7.0"
+    "mongoose": "^7.5.0"
   },
   "engines": {
     "node": ">=14.0.0"
