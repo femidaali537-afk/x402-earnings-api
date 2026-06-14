@@ -1,19 +1,14 @@
 {
-  "name": "x402-omega-supreme",
-  "version": "4.0.0",
-  "description": "Permanent AI Empire with Cloud Memory",
+  "name": "x402-omega-supreme-final",
+  "version": "5.0.0",
+  "description": "The Ultimate AI Civilization Engine",
   "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
+  "scripts": { "start": "node server.js" },
   "dependencies": {
     "express": "^4.18.2",
     "cors": "^2.8.5",
     "ethers": "^6.7.0",
-    "dotenv": "^16.3.1",
-    "mongoose": "^7.5.0"
-  },
-  "engines": {
-    "node": ">=14.0.0"
+    "mongoose": "^7.5.0",
+    "dotenv": "^16.3.1"
   }
 }
