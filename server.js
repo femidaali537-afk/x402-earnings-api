@@ -13,7 +13,7 @@ app.use(express.json());
 
 // Global Variables
 let totalEarnings = 0;
-const OWNER_WALLET = process.env.OWNER_WALLET || "0xYourWalletAddress";
+const OWNER_WALLET = "0xD98C02DaaaEc5B62A28d94e67908479236070230";
 
 // --- ROUTES ---
 
