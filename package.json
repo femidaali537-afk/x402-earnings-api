@@ -1,7 +1,6 @@
 {
-  "name": "x402-omega-supreme-final",
-  "version": "5.0.0",
-  "description": "The Ultimate AI Civilization Engine",
+  "name": "x402-omega-final-stable",
+  "version": "6.0.0",
   "main": "server.js",
   "scripts": { "start": "node server.js" },
   "dependencies": {
@@ -10,5 +9,8 @@
     "ethers": "^6.7.0",
     "mongoose": "^7.5.0",
     "dotenv": "^16.3.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
   }
 }
