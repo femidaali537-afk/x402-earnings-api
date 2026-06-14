@@ -1,0 +1,103 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-06-14",
+  
+  "VISION": {
+    "core_statement": "Self-improving multi-agent AI civilization that trades forex + BTCUSD with 24/7 signals, high winrate, continuous evolution",
+    "user_words_verbatim": "ek owner ai agent banna hai jo khud naya naya ai agent unlimited puri ai ki civilization",
+    "primary_goal": "Build AI civilization that gives trade signals 24/7, self-improves, achieves high winrate with high R:R",
+    "scope": "ONLY day trading and intraday — no swing, no position trading",
+    "instruments": ["BTCUSD", "forex pairs (EURUSD, GBPUSD, USDJPY, AUDUSD)"]
+  },
+  
+  "ARCHITECTURE": {
+    "pattern": "HYBRID_CIVILIZATION",
+    "layers": {
+      "layer_5": "Owner Agent — meta-orchestrator, capital allocator, kill switch",
+      "layer_4": "Agent Factory — genetic evolution, weekly breeding",
+      "layer_3": "Specialist Agents — DynamicAgent with random DNA (NO pre-defined)",
+      "layer_2": "ML Brains — LSTM, Transformer, PPO RL, FinBERT, GNN",
+      "layer_1": "Data Pipeline — Binance, MT5, News, On-chain, Macro"
+    },
+    "agent_population_target": 3000,
+    "all_active_24_7": true
+  },
+  
+  "MULTI_TIMEFRAME": {
+    "primary_timeframes": ["1m", "3m", "5m", "15m"],
+    "context_timeframes": ["1h", "4h"],
+    "confluence_principle": "Trade only when 1m + 3m + 5m + 15m all align — historically 70-80% winrate"
+  },
+  
+  "AGENT_CIVILIZATION": {
+    "target_count": "up to 3000",
+    "all_active_24_7": true,
+    "diversity_required": true,
+    "agent_types": {
+      "dynamic": "GenericAgent with RANDOM DNA — decides own strategy",
+      "risk_manager": "Safety gatekeeper — fixed DNA, validates every trade"
+    }
+  },
+  
+  "MULTI_AGENT_PATTERN": {
+    "chosen_pattern": "PATTERN_C_HYBRID",
+    "execution_model": "INDEPENDENT_PARALLEL + PERIODIC_CONSENSUS",
+    "consensus_meeting_interval_minutes": 5,
+    "consensus_method": "WEIGHTED_VOTE",
+    "disagreement_handling": "NO_TRADE_IF_DISAGREEMENT"
+  },
+  
+  "SELF_IMPROVEMENT": {
+    "mechanisms": [
+      {"name": "IMMEDIATE_FEEDBACK", "description": "Per-prediction outcome tracking"},
+      {"name": "DAILY_REVIEW", "description": "Agent reviews its trades daily"},
+      {"name": "WEEKLY_EVOLUTION", "description": "Factory breeds new agents weekly"},
+      {"name": "MONTHLY_REGIME", "description": "Recalibrate strategies monthly"},
+      {"name": "QUARTERLY_AUDIT", "description": "Full system audit quarterly"}
+    ]
+  },
+  
+  "WINRATE_STRATEGY": {
+    "philosophy": "Find setups where EXPECTED VALUE is positive enough to risk capital.",
+    "high_conviction_filter": "All agents consensus + multi-TF aligned → 75-85% effective winrate",
+    "asymmetric_rr": "Tight SL (0.5%), wide TP (2-4%) → 4:1 reward-to-risk"
+  },
+  
+  "GUARDRAILS_SACRED": {
+    "DOCTRINE": "These CANNOT be bypassed by any agent including Owner.",
+    "rules": [
+      {"id": 1, "rule": "max_position_size", "value": "2% per trade"},
+      {"id": 2, "rule": "daily_loss_limit", "value": "3% per day → stop trading"},
+      {"id": 3, "rule": "max_drawdown", "value": "15% → KILL SWITCH"},
+      {"id": 4, "rule": "total_exposure_cap", "value": "30% across all positions"},
+      {"id": 5, "rule": "max_correlation", "value": "0.7 between positions"},
+      {"id": 6, "rule": "max_open_positions", "value": "5 simultaneously"},
+      {"id": 7, "rule": "black_swan", "value": ">5% hourly → reduce size"},
+      {"id": 8, "rule": "data_staleness", "value": "5 min old → kill switch"},
+      {"id": 9, "rule": "human_approval", "value": ">$5000 trades"},
+      {"id": 10, "rule": "walk_forward", "value": "monthly re-validation"}
+    ]
+  },
+  
+  "USER_TEACHINGS_VERBATIM": [
+    "ek owner ai agent banna hai jo khud naya naya ai agent unlimited puri ai ki civilization",
+    "1 mint ka sara data 3 mint ka sara data or 5 mint ka sara data 15 mint ka sara data",
+    "AI agents milke collaborate Prr sab alag alag work kare",
+    "Sab kuch yaad rakhio learn krr lio",
+    "Owner ai agent 3000 ai agent tak create krr skta hai tu phle se mat decide krr",
+    "sabka ai agent ki alag alag pechan hogi",
+    "high RR with very High winrate 80/90 percent",
+    "Sare hi active rhege 24/7 hours",
+    "ai agent owner khud naye naye ai agent banyge"
+  ],
+  
+  "DOCTRINE_RULES": [
+    "Every agent must internalize this doctrine",
+    "Owner Agent must enforce these principles",
+    "Factory must respect open-ended evolution",
+    "Risk guardrails are SACRED — never override",
+    "Self-improvement is MANDATORY",
+    "Diversity is REQUIRED",
+    "NO pre-defined strategies — agents decide"
+  ]
+}
