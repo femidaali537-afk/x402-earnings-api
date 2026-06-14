@@ -1,0 +1,225 @@
+# =====================================================================
+# AI TRADING EMPIRE — Master Configuration
+# =====================================================================
+# This is the SINGLE SOURCE OF TRUTH for all system parameters.
+# Edit values here to tune behavior. NEVER hardcode in source code.
+# =====================================================================
+
+system:
+  name: "AI Trading Empire"
+  version: "1.0.0"
+  mode: "paper"                  # paper | live
+  log_level: "INFO"               # DEBUG | INFO | WARNING | ERROR
+  data_dir: "./data_cache"
+  model_dir: "./models_cache"
+  results_dir: "./results"
+
+# =====================================================================
+# DATA SOURCES
+# =====================================================================
+data:
+  crypto:
+    exchange: "binance"
+    symbols: ["BTC/USDT"]         # ONLY BTC per user request
+    timeframes: ["1m", "3m", "5m", "15m", "1h", "4h"]
+    lookback_days: 730
+    use_testnet: true
+  
+  forex:
+    broker: "mt5"                 # mt5 | oanda | yfinance
+    symbols: ["EURUSD", "GBPUSD", "USDJPY", "AUDUSD", "USDCAD"]
+    timeframes: ["M5", "M15", "M30", "H1", "H4"]
+    lookback_days: 730
+  
+  news:
+    sources: ["newsapi", "cryptopanic", "reddit"]
+    keywords: ["bitcoin", "btc", "ethereum", "federal reserve", "fomc", "ecb", "forex", "eurusd"]
+    refresh_minutes: 15
+  
+  onchain:
+    providers: ["glassnode", "blockchain", "mempool"]
+    metrics: ["active_addresses", "exchange_inflow", "exchange_outflow", "mvrv", "nupl", "hash_rate"]
+    refresh_minutes: 60
+
+# =====================================================================
+# ML MODEL HYPERPARAMETERS
+# =====================================================================
+models:
+  lstm:
+    sequence_length: 60
+    hidden_size: 128
+    num_layers: 3
+    dropout: 0.2
+    bidirectional: false
+    learning_rate: 0.0005
+    batch_size: 64
+    epochs: 50
+    features: 30
+  
+  transformer:
+    d_model: 128
+    n_heads: 8
+    n_layers: 6
+    dropout: 0.1
+    sequence_length: 96
+    learning_rate: 0.0003
+  
+  ppo:
+    policy: "MlpPolicy"
+    learning_rate: 0.0003
+    n_steps: 2048
+    batch_size: 64
+    n_epochs: 10
+    gamma: 0.99
+    gae_lambda: 0.95
+    clip_range: 0.2
+    ent_coef: 0.01
+    total_timesteps: 1000000
+
+# =====================================================================
+# AGENT PARAMETERS (Genome — Factory mutates these)
+# =====================================================================
+agents:
+  trend_follower:
+    enabled: true
+    ema_fast: [8, 12, 16, 21]
+    ema_slow: [21, 34, 50, 89, 200]
+    adx_threshold: [15, 20, 25, 30]
+    atr_multiplier_sl: [1.0, 1.5, 2.0, 2.5]
+    rr_target: [2.0, 3.0, 4.0]
+    weight: 1.0
+  
+  mean_reversion:
+    enabled: true
+    bb_period: [15, 20, 25, 30]
+    bb_std: [1.5, 2.0, 2.5, 3.0]
+    rsi_period: [7, 14, 21]
+    rsi_oversold: [20, 25, 30]
+    rsi_overbought: [70, 75, 80]
+    weight: 1.0
+  
+  breakout_hunter:
+    enabled: true
+    donchian_period: [10, 20, 30, 50, 100]
+    volume_multiplier: [1.2, 1.5, 2.0, 2.5]
+    atr_filter: [0.5, 1.0, 1.5]
+    weight: 1.0
+  
+  scalper:
+    enabled: true
+    order_flow_lookback: [20, 50, 100]
+    imbalance_threshold: [0.2, 0.3, 0.4]
+    spread_max_pips: [0.5, 1.0, 1.5]
+    weight: 0.8
+  
+  sentiment_agent:
+    enabled: true
+    model: "ProsusAI/finbert"
+    min_confidence: 0.65
+    lookback_hours: 24
+    weight: 0.7
+  
+  onchain_agent:
+    enabled: true
+    min_exchange_outflow_usd: 50000000
+    mvrv_threshold: [1.5, 2.0, 2.5]
+    weight: 0.8
+  
+  order_flow_agent:
+    enabled: true
+    cvd_lookback: [20, 50, 100]
+    delta_threshold: [0.3, 0.5, 0.7]
+    weight: 0.9
+  
+  risk_manager:
+    enabled: true
+    max_position_pct: 0.02
+    max_daily_loss_pct: 0.03
+    max_drawdown_pct: 0.15
+    max_open_positions: 5
+    weight: 2.0
+
+# =====================================================================
+# OWNER AGENT (Meta-Orchestrator)
+# =====================================================================
+owner:
+  review_interval_minutes: 60
+  min_trades_before_eval: 30
+  performance_threshold_sharpe: 0.5
+  kill_threshold_sharpe: -0.3
+  spawn_new_agent_if_regime_change: true
+  capital_allocation_method: "kelly"
+  rebalance_interval_hours: 24
+  max_population: 3000               # ALL active 24/7 (per user request)
+  consensus_interval_minutes: 5
+
+# =====================================================================
+# AGENT FACTORY (Evolutionary Engine)
+# =====================================================================
+factory:
+  enabled: true
+  population_size: 50                # Working population for evolution
+  elite_count: 10
+  crossover_rate: 0.7
+  mutation_rate: 0.15
+  tournament_size: 3
+  generations_per_cycle: 20
+  cycle_interval_hours: 168           # Weekly evolution
+  fitness_weights:
+    sharpe: 0.4
+    profit_factor: 0.3
+    winrate: 0.1
+    drawdown_penalty: 0.2
+
+# =====================================================================
+# BACKTESTING
+# =====================================================================
+backtest:
+  initial_capital: 10000
+  commission_pct: 0.04
+  slippage_pct: 0.05
+  walk_forward:
+    train_window_days: 365
+    test_window_days: 90
+    step_days: 30
+  monte_carlo_runs: 1000
+
+# =====================================================================
+# EXECUTION
+# =====================================================================
+execution:
+  paper_trade: true
+  live_capital: 1000                 # Start small
+  max_slippage_pct: 0.1
+  order_timeout_seconds: 30
+  retry_attempts: 3
+
+# =====================================================================
+# SERVING / NOTIFICATIONS
+# =====================================================================
+serving:
+  telegram:
+    enabled: false                   # Set true + bot_token to enable
+    bot_token_env: "TELEGRAM_BOT_TOKEN"
+    chat_id_env: "TELEGRAM_CHAT_ID"
+  
+  api:
+    enabled: true
+    host: "0.0.0.0"
+    port: 8000
+  
+  dashboard:
+    enabled: true
+    port: 8501
+
+# =====================================================================
+# 🔒 GUARDRAILS (CRITICAL — DO NOT DISABLE)
+# =====================================================================
+guardrails:
+  max_drawdown_pct: 0.15             # 15% → kill switch
+  daily_loss_limit_pct: 0.03         # 3% per day → stop trading
+  position_size_max_pct: 0.05        # 5% max single trade
+  total_exposure_max_pct: 0.30       # 30% across all positions
+  require_human_approval_above_usd: 5000
+  black_swan_volatility_threshold: 0.05   # 5% hourly move
+  kill_switch_on_data_stale_seconds: 300
