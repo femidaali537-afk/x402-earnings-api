@@ -9,38 +9,14 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// --- EMPIRE CONFIG ---
+// --- CONFIG ---
 const OWNER_WALLET = "0xba1b28d0d5803ed35d2d927282f3c8108fe97907";
 const RPC_URL = "https://mainnet.base.org";
-const PAYOUT_THRESHOLD = 0.001; 
 
-// STATE - Initialization with safe numbers
-let poolWealthETH = 0.00000000;
+let poolWealthETH = 0.0;
 let agentCount = 0;
 let logs = [];
-let intelligence = {
-    "Web_Scouting": 1.0,
-    "Arbitrage": 1.0,
-    "Data_Mining": 1.0,
-    "Social_Intelligence": 1.0
-};
-
-// Automatic Payout Logic
-async function sendPayout(amount) {
-    const pk = process.env.PRIVATE_KEY;
-    if (!pk) return console.log("PRIVATE_KEY not set!");
-    try {
-        const provider = new ethers.JsonRpcProvider(RPC_URL);
-        const wallet = new ethers.Wallet(pk, provider);
-        const tx = { to: OWNER_WALLET, value: ethers.parseEther(amount.toFixed(18)) };
-        const res = await wallet.sendTransaction(tx);
-        await res.wait();
-        return true;
-    } catch (e) {
-        console.error("Payout Error:", e.message);
-        return false;
-    }
-}
+let intelligence = { "Web_Scouting": 1.0, "Arbitrage": 1.0, "Data_Mining": 1.0, "Social_Mining": 1.0 };
 
 // --- DASHBOARD UI ---
 const html = `
@@ -50,38 +26,38 @@ const html = `
     <title>AI OMEGA EMPIRE</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        body { background: #08080a; color: #00ff88; font-family: sans-serif; text-align: center; padding: 20px; margin: 0; }
+        body { background: #08080a; color: #00ff88; font-family: sans-serif; text-align: center; padding: 20px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; max-width: 1200px; margin: auto; }
         .card { background: #111116; border: 1px solid #00ff8833; padding: 20px; border-radius: 12px; }
-        .val { font-size: 1.8em; font-weight: bold; color: #fff; margin: 5px 0; }
-        .log-box { background: #000; height: 200px; overflow-y: auto; text-align: left; padding: 10px; font-family: monospace; font-size: 0.8em; color: #00ff88; border-radius: 8px; border: 1px solid #333; }
-        .bar { background: #222; height: 6px; border-radius: 3px; margin: 5px 0; overflow: hidden; }
-        .fill { background: #00ff88; height: 100%; transition: 0.5s; }
-        h1 { font-size: 2em; letter-spacing: 5px; color: #fff; margin-bottom: 20px; }
+        .val { font-size: 2em; color: #fff; margin: 5px 0; }
+        .btn { background: #00ff88; color: #000; border: none; padding: 15px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
+        .btn:disabled { background: #444; color: #888; cursor: not-allowed; }
+        .log-box { background: #000; height: 180px; overflow-y: auto; text-align: left; padding: 10px; font-family: monospace; font-size: 0.8em; color: #00ff88; border: 1px solid #333; margin-top: 10px; }
     </style>
 </head>
 <body>
     <h1>OMEGA CIVILIZATION</h1>
     <div class="grid">
         <div class="card">
-            <h3 style="margin:0; font-size:0.9em;">TREASURY (ETH)</h3>
+            <h3>TREASURY (ETH)</h3>
             <div class="val" id="eth">0.00000000</div>
-            <p style="font-size:0.7em; color:#555;">Target: ${OWNER_WALLET}</p>
+            <button id="withdrawBtn" class="btn" onclick="withdraw()">WITHDRAW EARNINGS</button>
+            <p id="status" style="font-size:0.7em; color:#888; margin-top:10px;">Ready</p>
         </div>
         <div class="card">
-            <h3 style="margin:0; font-size:0.9em;">ACTIVE AGENTS</h3>
+            <h3>ACTIVE POPULATION</h3>
             <div class="val" id="agents">0</div>
-            <p style="font-size:0.7em; color:#555;">Self-Improving Units 24/7</p>
+            <p>Units working 24/7</p>
         </div>
     </div>
     <br>
     <div class="grid">
         <div class="card">
-            <h3 style="margin:0; font-size:0.9em; margin-bottom:10px;">CIVILIZATION INTELLIGENCE</h3>
+            <h3>INTELLIGENCE</h3>
             <div id="intel"></div>
         </div>
         <div class="card">
-            <h3 style="margin:0; font-size:0.9em; margin-bottom:10px;">LIVE OPERATION LOGS</h3>
+            <h3>LIVE WORK LOGS</h3>
             <div class="log-box" id="logs"></div>
         </div>
     </div>
@@ -91,20 +67,41 @@ const html = `
             try {
                 const res = await fetch('/api/v1/stats');
                 const data = await res.json();
-                
-                // Safety check for NaN
-                const ethVal = parseFloat(data.pool);
-                document.getElementById('eth').innerText = isNaN(ethVal) ? "0.00000000" : ethVal.toFixed(8);
-                document.getElementById('agents').innerText = data.agents || 0;
+                document.getElementById('eth').innerText = parseFloat(data.pool).toFixed(8);
+                document.getElementById('agents').innerText = data.agents;
                 
                 let intelHtml = '';
                 for(let key in data.intel) {
                     let pct = Math.min(100, data.intel[key] * 1).toFixed(1);
-                    intelHtml += \`<div style="text-align:left; font-size:0.8em; color:#aaa;">\${key}: \${pct}%</div><div class="bar"><div class="fill" style="width:\${pct}%"></div></div>\`;
+                    intelHtml += \`<div style="text-align:left; font-size:0.8em;">\${key}: \${pct}%</div><div style="background:#222;height:5px;margin-bottom:5px;"><div style="background:#00ff88;height:100%;width:\${pct}%"></div></div>\`;
                 }
                 document.getElementById('intel').innerHTML = intelHtml;
                 document.getElementById('logs').innerHTML = data.logs.map(l => \`<div>[\${l.t}] \${l.a}: +\${l.r} ETH</div>\`).join('');
-            } catch(e) { console.log("Update error", e); }
+            } catch(e) {}
+        }
+
+        async function withdraw() {
+            const btn = document.getElementById('withdrawBtn');
+            const status = document.getElementById('status');
+            btn.disabled = true;
+            status.innerText = "Processing Transaction...";
+            
+            try {
+                const res = await fetch('/api/v1/withdraw', { method: 'POST' });
+                const data = await res.json();
+                if(data.success) {
+                    alert("Success! Transfer Hash: " + data.hash);
+                    status.innerText = "Paid Successfully";
+                } else {
+                    alert("Error: " + data.error);
+                    status.innerText = "Failed";
+                }
+            } catch(e) {
+                alert("Withdrawal Failed. Check if you have gas fees (ETH) in server wallet.");
+                status.innerText = "Error";
+            }
+            btn.disabled = false;
+            update();
         }
         setInterval(update, 2000);
         update();
@@ -115,49 +112,52 @@ const html = `
 
 app.get('/', (req, res) => res.send(html));
 
-app.post('/api/v1/work', async (req, res) => {
+app.post('/api/v1/work', (req, res) => {
+    const { agent_id, reward, way } = req.body;
+    const r = parseFloat(reward) || 0;
+    poolWealthETH += r;
+    
+    if(way && intelligence[way]) intelligence[way] += 0.01;
+    
+    logs.unshift({ t: new Date().toLocaleTimeString(), a: agent_id, r: r.toFixed(8) });
+    if(logs.length > 20) logs.pop();
+    
+    const idNum = parseInt(agent_id.split('-').pop());
+    if(!isNaN(idNum) && idNum > agentCount) agentCount = idNum;
+
+    res.json({ success: true });
+});
+
+app.post('/api/v1/withdraw', async (req, res) => {
+    const pk = process.env.PRIVATE_KEY;
+    if (!pk) return res.status(400).json({ error: "Private Key not set" });
+
     try {
-        const { agent_id, way, reward } = req.body;
-        const r = parseFloat(reward) || 0;
+        const provider = new ethers.JsonRpcProvider(RPC_URL);
+        const wallet = new ethers.Wallet(pk, provider);
         
-        if (!isNaN(r)) {
-            poolWealthETH += r;
-        }
-        
-        // Update Intel
-        if(way && intelligence[way]) {
-            intelligence[way] += 0.01;
-            if(intelligence[way] > 100) intelligence[way] = 100;
-        }
-        
-        // Logging
-        logs.unshift({ t: new Date().toLocaleTimeString(), a: agent_id, w: way, r: r.toFixed(8) });
-        if(logs.length > 30) logs.pop();
-        
-        // Agent Count
-        const idParts = agent_id.split('-');
-        const idNum = parseInt(idParts[idParts.length - 1]);
-        if(!isNaN(idNum) && idNum > agentCount) agentCount = idNum;
+        const tx = {
+            to: OWNER_WALLET,
+            value: ethers.parseEther(poolWealthETH.toFixed(18))
+        };
 
-        // Auto Payout
-        if (poolWealthETH >= PAYOUT_THRESHOLD) {
-            const success = await sendPayout(poolWealthETH);
-            if (success) poolWealthETH = 0;
-        }
-
-        res.json({ success: true });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+        const transaction = await wallet.sendTransaction(tx);
+        await transaction.wait();
+        
+        poolWealthETH = 0; // Reset after success
+        res.json({ success: true, hash: transaction.hash });
+    } catch (e) {
+        res.status(500).json({ success: false, error: e.message });
     }
 });
 
 app.get('/api/v1/stats', (req, res) => {
     res.json({
-        pool: isNaN(poolWealthETH) ? "0.00000000" : poolWealthETH.toFixed(8),
+        pool: poolWealthETH.toFixed(8),
         agents: agentCount,
         intel: intelligence,
         logs: logs
     });
 });
 
-app.listen(PORT, () => console.log('Omega Server LIVE'));
+app.listen(PORT, () => console.log('Empire Ready with Manual Withdraw'));
