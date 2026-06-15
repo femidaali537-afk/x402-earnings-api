@@ -1,10 +1,11 @@
 ccxt
+pandas
+numpy==1.24.3
 pyyaml
 loguru
 python-dotenv
 aiohttp
 fastapi
 uvicorn
+pandas-ta
 scipy
-pandas_ta
-# neuralforecast # Abhi ke liye ise comment krdia hai taaki build pass ho jaye
