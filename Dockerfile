@@ -1,7 +1,7 @@
-# Use Python 3.10 as base
-FROM python:3.10-slim
+# Step 1: Base Image (Python 3.11 use kar rahe hain for neuralforecast)
+FROM python:3.11-slim
 
-# Install system dependencies
+# Step 2: System Dependencies
 RUN apt-get update && apt-get install -y \
     curl \
     build-essential \
@@ -12,29 +12,28 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
+# Step 3: Working Directory
 WORKDIR /app
 
-# Install Python dependencies
+# Step 4: Install Python Dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# Install Node.js dependencies
+# Step 5: Install Node.js Dependencies
 COPY package*.json ./
 RUN npm install --production
 
-# Copy the rest of the code
+# Step 6: Copy Source Code
 COPY . .
 
-# Environment variables
+# Step 7: Environment Variables
 ENV PORT=3000
 ENV PYTHON_API_URL=http://localhost:8000
 
-# Permissions and Ports
+# Step 8: Permissions & Entry Point
 RUN chmod +x start.sh
 EXPOSE 3000
 EXPOSE 8000
 
-# Start command
 CMD ["./start.sh"]
