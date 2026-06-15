@@ -7,5 +7,4 @@ python-dotenv
 aiohttp
 fastapi
 uvicorn
-pandas-ta
-scipy
+
