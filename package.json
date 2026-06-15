@@ -4,7 +4,7 @@
   "description": "AI Trading Empire backend server",
   "main": "server.js",
   "scripts": {
-    "start": "bash start.sh",
+    "start": "python3 main.py --mode paper & node server.js",
     "dev": "nodemon server.js"
   },
   "engines": {
