@@ -1,26 +1,30 @@
-FROM python:3.10-slim-bullseye
+FROM python:3.10-slim
 
-# System dependencies for math libraries
-RUN apt-get update && apt-get install -y \
-    curl build-essential gcc python3-dev \
-    && rm -rf /var/lib/apt/lists/*
+# Install Node.js & basic tools
+RUN apt-get update && apt-get install -y curl && \
+    curl -sL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Install dependencies
+# Install Python deps
 COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy source code
+# Install Node deps
+COPY package*.json ./
+RUN npm install --production
+
+# Copy all files
 COPY . .
 
-# Environment Variables
+# Environment setup
 ENV PORT=3000
 ENV PYTHON_API_URL=http://localhost:8000
-
 RUN chmod +x start.sh
+
 EXPOSE 3000
 EXPOSE 8000
 
-CMD ["./start.sh"]
+CMD ["bash", "start.sh"]
