@@ -1,8 +1,3 @@
 #!/bin/bash
-echo "👑 AI Trading Empire is waking up..."
-
-# Run python engine
-python3 main.py --mode paper & 
-
-# Start Node server
+python3 main.py &
 node server.js
