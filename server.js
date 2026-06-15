@@ -63,7 +63,7 @@ class MongoManager {
       await this.client.connect();
       this.db = this.client.db(CONFIG.MONGODB_DB_NAME);
       this.connected = true;
-      logger.success(`✓ MongoDB connected: ${CONFIG.MONGODB_DB_NAME}`);
+      logger.info(`✓ MongoDB connected: ${CONFIG.MONGODB_DB_NAME}`);
       return true;
     } catch (err) {
       logger.warn(`⚠️ MongoDB connection failed (continuing without it): ${err.message}`);
@@ -197,7 +197,7 @@ async function start() {
   
   // ALWAYS start the HTTP server, even if MongoDB failed
   const server = app.listen(CONFIG.PORT, '0.0.0.0', () => {
-    logger.success(`🚀 Server running on port ${CONFIG.PORT}`);
+    logger.info(`🚀 Server running on port ${CONFIG.PORT}`);
     logger.info(`📡 Backend: ${CONFIG.PYTHON_API_URL}`);
     logger.info(`🍃 MongoDB: ${mongo.connected ? 'connected' : 'NOT connected (running in no-db mode)'}`);
     logger.info(`🛡️ Health: http://localhost:${CONFIG.PORT}/health`);
