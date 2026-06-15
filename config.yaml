@@ -1,73 +1,28 @@
-# =====================================================================
-# AI TRADING EMPIRE — Master Configuration (Optimized for Render)
-# =====================================================================
-
 system:
   name: "AI Trading Empire"
-  version: "1.0.0"
   mode: "paper"
   log_level: "INFO"
-  data_dir: "./data_cache"
-  model_dir: "./models_cache"
-  results_dir: "./results"
 
 data:
   crypto:
     exchange: "binance"
     symbols: ["BTC/USDT"]
-    timeframes: ["1m", "3m", "5m", "15m", "1h", "4h"]
-    lookback_days: 7       # 730 se kam krdia taaki startup fast ho
+    timeframes: ["1m", "5m"]
+    lookback_days: 1
     use_testnet: true
 
-  # Forex/News/Onchain ko abhi light rakha hai Render ke liye
-  forex:
-    enabled: false         # Backend focus on BTC first
-    symbols: ["EURUSD"]
-    timeframes: ["M5", "M15"]
-  
-  news:
-    refresh_minutes: 60    # Kam frequent taaki CPU bache
-  
-  onchain:
-    refresh_minutes: 120
-
 owner:
-  review_interval_minutes: 5   # Fast feedback
-  min_trades_before_eval: 10
-  performance_threshold_sharpe: 0.5
-  kill_threshold_sharpe: -0.3
-  spawn_new_agent_if_regime_change: true
-  capital_allocation_method: "kelly"
-  rebalance_interval_hours: 24
-  max_population: 1000          # Per Space 1000 agents (Total 3000 across 3 spaces)
+  max_population: 50           # Abhi ke liye 50 rakha hai taaki build pass ho
+  review_interval_minutes: 5
   consensus_interval_minutes: 5
 
 factory:
   enabled: true
-  population_size: 20          # Startup fast karne ke liye 50 se 20 krdia
-  elite_count: 5
-  crossover_rate: 0.7
-  mutation_rate: 0.15
-  cycle_interval_hours: 24
-
-guardrails:
-  max_drawdown_pct: 0.15
-  daily_loss_limit_pct: 0.03
-  position_size_max_pct: 0.05
-  total_exposure_max_pct: 0.30
-  require_human_approval_above_usd: 5000
-  black_swan_volatility_threshold: 0.05
-  kill_switch_on_data_stale_seconds: 300
-
-execution:
-  paper_trade: true
-  live_capital: 1000
-  max_slippage_pct: 0.1
+  population_size: 10
 
 serving:
   api:
     enabled: true
-    host: "0.0.0.0"
     port: 8000
   dashboard:
     enabled: true
