@@ -4,26 +4,21 @@ system:
   log_level: "INFO"
 
 data:
-  crypto:
-    exchange: "binance"
-    symbols: ["BTC/USDT"]
-    timeframes: ["1m", "5m"]
-    lookback_days: 1
-    use_testnet: true
+  crypto_sources: ["binance", "coinbase"]
+  symbols: ["BTC/USDT"]
+  timeframes: ["1m", "3m", "5m", "15m"]
+  forex_symbols: ["XAUUSD=X", "EURUSD=X", "GBPUSD=X", "JPYUSD=X"]
+  news_source: "https://cryptopanic.com/api/v1/posts/?auth_token=PUBLIC&kind=news"
 
 owner:
-  max_population: 50           # Abhi ke liye 50 rakha hai taaki build pass ho
-  review_interval_minutes: 5
-  consensus_interval_minutes: 5
+  max_population: 1000
+  review_interval_minutes: 1
+  min_confluence_level: 3
 
 factory:
   enabled: true
-  population_size: 10
+  population_size: 20
 
 serving:
-  api:
-    enabled: true
-    port: 8000
-  dashboard:
-    enabled: true
-    port: 8501
+  api_port: 8000
+  ui_port: 3000
